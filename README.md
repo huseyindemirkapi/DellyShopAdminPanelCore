@@ -1,0 +1,2 @@
+# DellyShopAdminPanelCore
+ Admin panel
