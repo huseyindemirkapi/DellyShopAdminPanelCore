@@ -1,0 +1,99 @@
+﻿
+@using DellyShop.Domain.ViewModels
+
+@model LoginViewModel
+@*@inject SignInManager<ApplicationUser> SignInManager
+    @inject IOptions<AdminAccount> AdminAccount*@
+
+@{
+
+    Layout = null;
+}
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DellyShopCoreWebApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/fontawesome-free/css/all.css" rel="stylesheet" />
+    <link href="~/lib/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/admin-lte/css/adminlte.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body style="background-color:aliceblue;">
+    <form class="form-signin" asp-area="Admin" asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+        <div class="text-center mb-4">
+            <img class="mb-4" src="~/asf.png" alt="" width="72" height="72">
+
+            <h1 class="h3 mb-3 font-weight-normal">DellyShop</h1>
+            <p>Build form controls with floating labels via the <code>:placeholder-shown</code> pseudo-element. </p>
+        </div>
+
+        @*<div class="form-label-group">
+                <label for="inputEmail">Email address</label>
+                <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+            </div>
+
+            <div class="form-label-group">
+                <label for="inputPassword">Password</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+            </div>
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" value="remember-me"> Remember me
+                </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>*@
+        @*<h4>Use a local account to log in.</h4>*@
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" placeholder="EmailAddress" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" class="form-control" placeholder="Password" required />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <div class="checkbox">
+                <label asp-for="RememberMe">
+                    <input asp-for="RememberMe" />
+                    @Html.DisplayNameFor(m => m.RememberMe)
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Sing In</button>
+        </div>
+        <div class="form-group">
+            @*<p>
+                    <a asp-action="ForgotPassword">Şifrenizi mi Unuttunuz?</a>
+                </p>*@
+            <p>
+                <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Register as a new user?</a>
+            </p>
+        </div>
+        <p class="mt-5 mb-3 text-muted text-center">&copy; 2017-2020</p>
+    </form>
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/datatables/jquery.dataTables.js"></script>
+    @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
+    <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/admin-lte/js/adminlte.min.js"></script>
+    <script src="~/lib/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>

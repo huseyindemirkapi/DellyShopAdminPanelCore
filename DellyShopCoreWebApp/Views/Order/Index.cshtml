@@ -1,0 +1,93 @@
+﻿@model DellyShop.Domain.ViewModels.OrderViewModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center bg-info text-gray-dark">Orders</h1>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <form asp-action="Index" method="get">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group col-lg-4">
+                <label asp-for="Customers" class="control-label"></label>
+                <select asp-for="SelectedCustomer" name="SelectedCustomer" class="form-control">
+                    <option selected="selected" value="0">All Customer</option>
+                    @foreach (var customer in Model.Customers)
+                    {
+                        <option value="@customer.Id">@customer.Name @customer.Surname</option>
+                    }
+                </select>
+                <span asp-validation-for="Customers" class="text-danger"></span>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <input type="submit" value="Ara" class="btn btn-info" />
+                </div>
+            </div>
+        </form>
+        @*<div class="col-lg-12">
+
+                <a class="btn btn-success float-lg-right" asp-controller="User" asp-action="Create"><b>Add New User</b></a>
+
+            </div>*@
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 table-responsive">
+        <table class="table table-striped disabled" id="example">
+            <thead>
+                <tr>
+                    @*<th>Product Id <i class="fas fa-filter"></i></th>*@
+                    <th>OrderId <i class="fas fa-filter"></i></th>
+                    <th>Order State <i class="fas fa-filter"></i></th>
+                    <th>Customer <i class="fas fa-filter"></i></th>
+                    <th>OtderCount <i class="fas fa-filter"></i></th>
+                    <th>TotalPrice <i class="fas fa-filter"></i></th>
+                    <th>Description <i class="fas fa-filter"></i></th>
+                    @*<th>Products <i class="fas fa-filter"></i></th>*@
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.OrderState</td>
+                        <td>@order.Customer.Name  @order.Customer.Surname</td>
+                        <td>@order.OrderCount</td>
+                        <td>@order.TotalPrice</td>
+                        <td>@order.Description</td>
+                        <td class="float-right">
+                            | @Html.ActionLink("Edit", "Update", "Order", new { id = order.Id }) |
+                            <span class="btn btn-danger btn-sm" id="textBlack">@Html.ActionLink("Delete", "Delete", "Order", new { id = order.Id })</span>
+                        </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <!-- /.col -->
+</div>
+
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "dom": '<"top"i>rt<"bottom"flp><"clear">',
+                "dom": '<"wrapper"flipt>',
+                "dom": '<lf<t>ip>'
+            });
+        });
+
+
+    </script>
+
+}

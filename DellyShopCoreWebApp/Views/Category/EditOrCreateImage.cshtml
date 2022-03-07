@@ -1,0 +1,222 @@
+﻿@model DellyShop.Domain.ViewModels.CategoryImageCreateOrEditVM
+@{
+    ViewData["Title"] = "EditOrCreateImage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="panel panel-body" style="min-height:256px">
+
+    <div class="col-md-9">
+
+        <h2>Category add image for Name = @Model.CategoryName </h2>
+
+    </div>
+    <div class="col-md-9">
+
+        <input type="hidden" class="categoryId" name="CategoryId" value="@Model.CategoryId" />
+        <div class="col-md-4">
+            <div class="btn btn-primary">
+                <input type="file" id="imageBrowes" />
+            </div>
+            <hr />
+
+            <div id="imgPreview" class="thumbnail" style="display:none">
+                <img class="img-responsive delly-image" id="targetImg" />
+                <div class="caption">
+                    <a href="#" onclick="ClearPreview()"><i class="fas fa-trash"></i></a>
+                    <span id="description"></span>
+                </div>
+                <a href="#" class="btn btn-default" onclick="Uploadimage()">Upload</a>
+            </div>
+
+        </div>
+
+    </div>
+    <br />
+    <h2 class="text-center bg-gradient-orange">Uploaded Image </h2>
+    <div class="col-md-12 thumbnail" id="uploadedImage">
+
+
+    </div>
+
+
+</div>
+
+@section scripts{
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script>
+
+            $(document).ready(function () {
+                ClearPreview();
+
+                var categoryId =@Model.CategoryId;
+                GetCategoryImages(categoryId);
+
+                $("#imageBrowes").change(function () {
+
+                    var File = this.files;
+
+                    if (File && File[0]) {
+                        ReadImage(File[0]);
+                    }
+
+                })
+
+            })
+
+
+            var ReadImage = function (file) {
+
+                var reader = new FileReader;
+                var image = new Image;
+
+                reader.readAsDataURL(file);
+                reader.onload = function (_file) {
+
+                    image.src = _file.target.result;
+                    image.onload = function () {
+
+                        var height = 20;
+                        var width = 20;
+                        var type = file.type;
+                        var size = ~~(file.size / 1024) + "KB";
+
+                        $("#targetImg").attr('src', _file.target.result);
+                        $("#description").text("Size:" + size + ", " + height + "X " + width + ", " + type + "");
+                        $("#imgPreview").show();
+
+                    }
+
+                }
+
+            }
+
+            var ClearPreview = function () {
+                $("#imageBrowes").val('');
+                $("#description").text('');
+                $("#imgPreview").hide();
+
+            }
+
+            var Uploadimage = function () {
+
+                var file = $("#imageBrowes").get(0).files;
+                var categoryId = $('.categoryId').val();
+                var imageFileOrder = $('.ImageFileOrder').val();
+
+                var data = new FormData;
+                data.append("ImageFile", file[0]);
+                data.append("CategoryId", categoryId);
+                data.append("ImageFileOrder", imageFileOrder);
+
+                @*data.append("Id", @Model.Id);*@
+
+                $.ajax({
+
+                    type: "Post",
+                    url: "/Image/CategoryImageUpload",
+                    data: data,
+                    contentType: false,
+                    processData: false,
+                    success: function (imgID) {
+                        ClearPreview();
+
+                        $("#uploadedImage").append('<div class="col-md-3"><img src="/Image/CategoryImageRetrieve?imgID=' + imgID + '" class="img-responsive delly-image thumbnail"/>&nbsp&nbsp<a href="#" onclick="DeleteImage(' + imgID +')"><i class="fas fa-trash text-danger">Delete</i></a></div>');
+                        //$("#uploadedImage").append('')
+
+
+                        //$("#uploadedImage").append('<img src="' + response + '" class="img-responsive thumbnail"/>');
+                        //$('.ImageFileOrder').val(parseInt( imageFileOrder )+ 1);
+                    }
+
+                })
+            }
+
+                //
+
+                //function DeleteImage(imgID) {
+                //    var data = new FormData;
+                //    data.append("imgID", imgID);
+
+
+                //    $.ajax({
+
+                //        type: "Post",
+                //        url: "/Image/ImageDelete",
+                //        data: data,
+                //        contentType: false,
+                //        processData: false,
+                //        success: function (result) {
+
+
+                //        }
+
+                //    })
+                //}
+
+
+        function GetCategoryImages(categoryId) {
+
+            //var data = new FormData;
+            //data.append("productId", productId);
+
+
+            $.ajax({
+
+                type: "Get",
+                url: "/Image/GetCategoryImage/" + "?categoryId=" + categoryId,
+                contentType: false,
+                processData: false,
+                dataType: "json"
+            }).done(function (data) {
+
+                if (data.entity != 0) {
+
+                    $.each(data.entity, function (index, value) {
+                        console.log(data.entity);
+
+                        var imgID = value.id;
+
+                        $("#uploadedImage").append('<div class="col-md-3"><img src="/Image/CategoryImageRetrieve?imgID=' + imgID + '" class="img-responsive delly-image thumbnail"/>&nbsp&nbsp<a href="#" onclick="DeleteImage(' + imgID + ')"><i class="fas fa-trash text-danger">Delete</i></a></div>');
+
+
+                    })
+
+
+                }
+
+            }).fail(function () {
+                //bootbox.alert("Error encountered while taking product images");
+                alert("Error encountered while taking product images");
+            })
+
+
+        };
+
+        function DeleteImage(imgID) {
+
+            $.ajax({
+
+                type: "Get",
+                url: "/Image/DeleteImage/" + "?imgID=" + imgID,
+                contentType: false,
+                processData: false,
+                dataType: "json"
+            }).done(function (data) {
+
+                alert("Selected Category Image is Deleted.");
+                location.reload();
+
+            }).fail(function () {
+
+                alert("Error encountered while deleting Category image.");
+            })
+
+
+        }
+
+
+    </script>
+}
+

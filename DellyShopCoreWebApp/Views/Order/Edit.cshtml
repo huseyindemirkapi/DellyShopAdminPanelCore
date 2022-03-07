@@ -1,0 +1,70 @@
+﻿@model DellyShop.Domain.ViewModels.OrderEditViewModel
+@using DellyShop.Domain.Enums
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+    <h2 class="text-center bg-info text-gray-dark"> <b>Order Edit</b> for Customer Name = @Model.Customer.Name </h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <form action="/Product/Edit" method="post">
+            <input type="hidden" name="UserId" value="@Model.Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group js-categoryId col-lg-4">
+                <label asp-for="ProductOrderMany" class="control-label"></label>
+                <select asp-for="SelectedProduct" name="SelectedCategory" class="form-control">
+                    <option selected="selected" value="0">Products</option>
+                    @foreach (var product in Model.ProductOrderMany)
+                    {
+                        <option value="@product.Id">@product.Product.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="ProductOrderMany" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-lg-4">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" required />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group col-lg-4">
+                <label asp-for="ShippingCostPrice" class="control-label"></label>
+                <input asp-for="ShippingCostPrice" class="form-control" required />
+                <span asp-validation-for="ShippingCostPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group col-lg-4">
+                <label asp-for="TotalPrice" class="control-label"></label>
+                <input asp-for="TotalPrice" class="form-control" required />
+                <span asp-validation-for="TotalPrice" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-lg-4">
+                <label asp-for="OrderState" class="control-label"></label>
+                <select asp-for="OrderState" value="1" class="form-control" asp-items="@Html.GetEnumSelectList(typeof(OrderState))"></select>
+                <span asp-validation-for="OrderState" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group text-danger">
+                <input asp-for="@Model.IsActive" type="checkbox" id="isActive" /> <label> Is Active ? </label>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Update" class="btn btn-success js-button-doubleclick" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="text text-danger">Return to User List!</a>
+</div>
+@section scripts{
+    <script src="~/lib/jquery/jquery.min.js"></script>
+}
+
+

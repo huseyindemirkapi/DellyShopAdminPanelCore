@@ -1,0 +1,209 @@
+﻿@model DellyShop.Domain.ViewModels.ProductCreateOrEditViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2 class="text-center bg-info text-gray-dark"> @Model.Title </h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <form action="@Model.Action" method="post">
+            <input type="hidden" class="js-prduct-id" name="PartId" value="@Model.Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group js-categoryId col-lg-4">
+                <label asp-for="Categories" class="control-label"></label>
+                <select asp-for="SelectedCategory" name="SelectedCategory" class="form-control">
+                    <option selected="selected" value="0">All Categories</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.Id">@category.CategoryName</option>
+                    }
+                </select>
+                <span asp-validation-for="Categories" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group js-product-name col-lg-4">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            @*<div class="form-group js-discount-type ">
+                    <label asp-for="Currencys" class="control-label"></label>
+                    <select asp-for="Currencys" value="1" class="form-control" asp-items="@Html.GetEnumSelectList(typeof(Currency))"></select>
+                    <span asp-validation-for="Currencys" class="text-danger"></span>
+                </div>*@
+            <div class="form-group js-product-description col-lg-4">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group js-product-price col-lg-4">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group js-product-stockcount col-lg-4">
+                <label asp-for="StockCount" class="control-label"></label>
+                <input asp-for="StockCount" class="form-control" />
+                <span asp-validation-for="StockCount" class="text-danger"></span>
+            </div>
+            <div class="form-group text-danger">
+                <input asp-for="@Model.IsActive" id="isActive" /> <label> Is Active ?</label>
+            </div>
+            @*<div class="form-group col-lg-4">
+                <label asp-for="ImageFile" class="control-label"></label>
+
+               
+                <div class="custom-file">
+                    <input asp-for="ImageFile" class="custom-file-input" id="customFile">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+
+
+                <div id="imgPreview" class="thumbnail" style="display:none">
+                    <img class="delly-image" id="targetImg" />
+                    <div class="caption">
+                        <a href="#" onclick="ClearPreview()"><i class="glyphicon glyphicon-trash"></i></a>
+                        <span id="description"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-2 thumbnail" id="uploadedImage">
+
+
+                </div>
+
+            </div>*@
+
+            <div class="form-group">
+                <input type="submit" value="@Model.Button" class="btn btn-success js-button-doubleclick" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="text text-danger">Return to Product List!</a>
+</div>
+@section scripts{
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    @*<script type="text/javascript">
+
+
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+
+            console.log('içinde' + fileName);
+        });
+
+        $(".js-product-create").click(function () {
+
+            var productId = $('.js-prduct-id').val();
+            var categoryId = $('.js-categoryId select').val();
+            var name = $('.js-product-name input').val();
+            var description = $('.js-product-description input').val();
+            var price = $('.js-product-price input').val();
+            var stockCount = $('.js-product-stockcount input').val();
+            var isactive = $("#isActive").prop("checked");
+            var fileUpload = $("#customFile").get(0);
+            var files = fileUpload.files;
+
+            var formData = new FormData();
+
+            // Looping over all files and add it to FormData object
+            //for (var i = 0; i < files.length; i++) {
+            formData.append('ImageFile', files[0]);
+            formData.append('Id', productId);
+            formData.append('SelectedCategory', categoryId);
+            formData.append('Name', name);
+            formData.append('Description', description);
+            formData.append('Price', price);
+            formData.append('IsActive', isactive);
+            formData.append('StockCount', stockCount);
+            //}
+
+            console.log("ilk" + formData);
+
+            $.ajax({
+                url: "../Product/UploadPictures",
+                type: 'POST',
+                data: formData,
+                async: true,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (status) {
+                    // do something on success
+                }
+            });
+
+
+            console.log("end" + formData);
+
+        });
+
+        $(document).ready(function () {
+
+            $("#customFile").change(function () {
+
+                //console.log("imagebrowser");
+                //imagecount++;
+                //var text = '<div data-id="' + imagecount + '" class="parent">'
+                //    + '<img class=repair-image id="image' + imagecount + '" alt="your image"  />'
+                //    + ' <button class="close" data-id="' + imagecount + '">X</button>'
+                //    + '</div>';
+
+                //$('#imgPreview').append(text);
+                //console.log("image son");
+
+                var File = this.files;
+
+                if (File && File[0]) {
+                    ReadImage(File[0]);
+                }
+
+            })
+
+        })
+
+        var ReadImage = function (file) {
+
+            var reader = new FileReader;
+            var image = new Image;
+
+            reader.readAsDataURL(file);
+            reader.onload = function (_file) {
+
+                image.src = _file.target.result;
+                image.onload = function () {
+
+                    var height = 20;// this.height;
+                    var width = 20; //this.width;
+                    var type = file.type;
+                    var size = ~~(file.size / 1024) + "KB";
+
+                    $("#targetImg").attr('src', _file.target.result);
+                    $("#description").text("Size:" + size + ", " + height + "X " + width + ", " + type + "");
+                    $("#imgPreview").show();
+
+
+                }
+
+            }
+
+        }
+        //imagecount = 0;
+        var ClearPreview = function () {
+            $("#imageBrowes").val('');
+            $("#description").text('');
+            $("#imgPreview").hide();
+
+        }
+
+
+
+    </script>*@
+}
